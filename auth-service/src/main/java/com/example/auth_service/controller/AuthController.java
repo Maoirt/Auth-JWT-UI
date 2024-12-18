@@ -4,7 +4,11 @@ import com.example.auth_service.security.UserAuthProvider;
 import com.example.auth_service.dto.CredentialsDto;
 import com.example.auth_service.dto.SignUpDto;
 import com.example.auth_service.dto.UserDto;
-import com.example.auth_service.service.UserService;
+import com.example.auth_service.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +19,21 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "AuthController Controller", description = "Контроллер для авторизации и регистрации")
 public class AuthController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserAuthProvider userAuthProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody CredentialsDto credentialsDto) {
+    @Operation(summary = "Вход", description = "Позволяет войти в приложение")
+    public ResponseEntity<UserDto> login(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Данные о пользователе",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CredentialsDto.class))
+            )
+            @RequestBody CredentialsDto credentialsDto) {
 
        UserDto user = userService.login(credentialsDto);
        user.setToken(userAuthProvider.createToken(user.getUserName()));
@@ -30,7 +42,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody SignUpDto signUpDto) {
+    @Operation(summary = "Вход", description = "Позволяет зарегистрироваться в приложении")
+    public ResponseEntity<UserDto> register(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Данные о пользователе",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = SignUpDto.class))
+            )
+            @RequestBody SignUpDto signUpDto) {
 
         UserDto user = userService.register(signUpDto);
         user.setToken(userAuthProvider.createToken(user.getUserName()));

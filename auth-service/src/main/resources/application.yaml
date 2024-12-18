@@ -14,3 +14,10 @@ security:
   jwt:
     token:
       secret-key: secret-value
+
+openapi:
+  dev-url: "http://localhost:8081"
+  prod-url: "https://authservice.ru"
+  email: "example@gmail.com"
+  name: "Author"
+  url: "https://authservice.ru"
