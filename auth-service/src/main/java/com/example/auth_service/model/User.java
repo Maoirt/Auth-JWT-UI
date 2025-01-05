@@ -21,5 +21,14 @@ public class User {
     private UUID id;
 
     private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
     private String password;
+    private String authProvider;
+    @Transient
+    private boolean enable;
+    @Transient
+    private boolean tokenExpired;
 }

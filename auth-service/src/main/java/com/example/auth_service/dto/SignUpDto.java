@@ -21,7 +21,30 @@ public class SignUpDto {
     private String userName;
 
     @NotBlank
+    @Size(min = 1, max = 50)
+    @Schema(description = "Почта пользователя", example = "dan3889@gmail.com")
+    private String email;
+
+    @NotBlank
+    @Size(min = 1, max = 50)
+    @Schema(description = "Имя пользователя", example = "Daniel")
+    private String firstName;
+
+    @NotBlank
+    @Size(min = 1, max = 50)
+    @Schema(description = "Фамилия пользователя", example = "Daniel")
+    private String lastName;
+
+
+    @NotBlank
+    @Size(min = 1, max = 50)
+    @Schema(description = "Телефон пользователя", example = "7918578378")
+    private String phone;
+
+    @NotBlank
     @Size(min = 10, max = 250)
     @Schema(description = "Пароль пользователя", example = "r4hoiahiugy3ya8o7gak")
     private char[] password;
+
+
 }

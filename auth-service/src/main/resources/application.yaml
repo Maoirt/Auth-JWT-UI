@@ -1,4 +1,22 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23li9srhsab5Erlzef
+            client-secret: 38a1c725dcb382fbe5088e419a3a37b5b3c0d5ea
+          google:
+            client-id: 1050657562664-ecfdm7hfjafns7kv6pjlhenvhckfln0i.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+              - openid
+        provider:
+          google:
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
   application:
     name: AUTH-SERVICE
 
