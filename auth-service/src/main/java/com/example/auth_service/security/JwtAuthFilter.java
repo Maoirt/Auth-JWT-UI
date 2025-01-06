@@ -23,7 +23,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(header!=null){
+        if(header != null){
 
             String[] elements = header.split(" ");
 
