@@ -12,3 +12,7 @@ spring:
         smtp:
           auth: true
           starttls: true
+
+email:
+  subject: Email Verification
+  message: Click the link to verify your email
