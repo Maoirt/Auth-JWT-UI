@@ -31,4 +31,7 @@ public class User {
     private boolean enable;
     @Transient
     private boolean tokenExpired;
+
+    private boolean enabledVerification;
+    private String verificationToken;
 }
