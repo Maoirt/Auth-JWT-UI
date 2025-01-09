@@ -10,6 +10,8 @@ CREATE TABLE _user
     last_name varchar(50) NOT NULL,
     password varchar(256),
     auth_provider varchar(50),
+    enabled_verification boolean DEFAULT false,
+    verification_token varchar(36),
     CONSTRAINT user_id_pk PRIMARY KEY (id)
 );
 

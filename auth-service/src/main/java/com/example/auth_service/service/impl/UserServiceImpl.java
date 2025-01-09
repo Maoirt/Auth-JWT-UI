@@ -7,11 +7,15 @@ import com.example.auth_service.exception.UserException;
 import com.example.auth_service.mapper.UserMapper;
 import com.example.auth_service.model.User;
 import com.example.auth_service.repository.UserRepository;
+import com.example.auth_service.request.EmailRequest;
 import com.example.auth_service.service.UserService;
+import com.example.auth_service.util.ActivationTokenGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.CharBuffer;
 import java.util.Optional;
@@ -24,12 +28,27 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDto findByUserName(String login){
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public void saveUser(User user){
+        userRepository.save(user);
+    }
+
+    public UserDto findByUserName(String login) {
+
         User user =  userRepository.findByUserName(login).orElseThrow(()-> new UserException("Unknown user", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
 
-    public UserDto login(CredentialsDto credentialsDto){
+    public User findByVerificationToken(String token){
+
+        User user = userRepository.findByVerificationToken(token).orElseThrow(()->new UserException("Unknown user with token", HttpStatus.NOT_FOUND));
+        return user;
+    }
+
+    public UserDto login(CredentialsDto credentialsDto) {
+
         User user = userRepository.findByUserName(credentialsDto.getUserName()).orElseThrow(()->new UserException("Unknown user", HttpStatus.NOT_FOUND));
 
         if(passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())){
@@ -39,7 +58,8 @@ public class UserServiceImpl implements UserService {
         throw new UserException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
-    public UserDto register(SignUpDto userDto){
+    public UserDto register(SignUpDto userDto) {
+
         Optional<User> optionalUser = userRepository.findByUserName(userDto.getUserName());
 
         if(optionalUser.isPresent()){
@@ -48,8 +68,15 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
+        userRepository.save(user);
 
-        User savedUser = userRepository.save(user);
+        String token = ActivationTokenGenerator.generateToken();
+        user.setVerificationToken(token);
+        userRepository.save(user);
+
+        String confirmationUrl = "http://localhost:8081/verify-email?token=" + token;
+        EmailRequest emailRequest = new EmailRequest(user.getEmail(), "Email Verification", "Click the link to verify your email: " + confirmationUrl);
+        restTemplate.postForObject("http://localhost:8083/api/email/send-email", emailRequest, Void.class);
 
         return userMapper.toUserDto(user);
     }

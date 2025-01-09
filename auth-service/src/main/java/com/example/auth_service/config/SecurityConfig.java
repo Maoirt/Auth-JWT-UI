@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests)->requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/logout", "/oauth2/**").permitAll()
+                        .requestMatchers("/logout", "/oauth2/**", "/verify-email/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

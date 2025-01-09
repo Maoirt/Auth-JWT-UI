@@ -27,11 +27,11 @@ public class User {
     private String phone;
     private String password;
     private String authProvider;
+    private boolean enabledVerification;
+    private String verificationToken;
     @Transient
     private boolean enable;
     @Transient
     private boolean tokenExpired;
 
-    private boolean enabledVerification;
-    private String verificationToken;
 }
