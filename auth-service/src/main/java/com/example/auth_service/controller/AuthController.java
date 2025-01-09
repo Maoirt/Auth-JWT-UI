@@ -6,6 +6,7 @@ import com.example.auth_service.security.UserAuthProvider;
 import com.example.auth_service.dto.CredentialsDto;
 import com.example.auth_service.dto.SignUpDto;
 import com.example.auth_service.dto.UserDto;
+import com.example.auth_service.service.impl.CustomOAuth2UserService;
 import com.example.auth_service.service.impl.UserServiceImpl;
 import com.example.auth_service.service.impl.VerificationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +32,7 @@ public class AuthController {
     private final UserServiceImpl userService;
     private final UserAuthProvider userAuthProvider;
     private final VerificationServiceImpl verificationService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @PostMapping("/login")
     @Operation(summary = "Вход", description = "Позволяет войти в приложение")
@@ -61,6 +68,7 @@ public class AuthController {
     }
 
     @PostMapping("/verify-email")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String verifyEmail(@RequestParam("token") String token, Model model) {
         String result = verificationService.validateVerificationToken(token);
         User user = userService.findByVerificationToken(token);
@@ -74,4 +82,52 @@ public class AuthController {
             return "verify-email";
         }
     }
+//    @GetMapping("/oauth2/callback")
+//    @CrossOrigin(origins = "http://localhost:3000")
+//    public ResponseEntity<UserDto> oauth2Callback(Authentication authentication) {
+//        if (authentication == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
+//
+//        if (!(authentication instanceof OAuth2AuthenticationToken)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
+//
+//        OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
+//        OidcUser  oidcUser  = (OidcUser ) oauth2Token.getPrincipal();
+//
+//        String username = oidcUser .getAttribute("sub");
+//        if (username == null || username.trim().isEmpty()) {
+//            username = oidcUser .getAttribute("login");
+//        }
+//        String token = userAuthProvider.createToken(username);
+//
+//        UserDto userDto = new UserDto();
+//        userDto.setUserName(username);
+//        userDto.setToken(token);
+//
+//        return ResponseEntity.ok(userDto);
+//    }
+//
+//    @GetMapping("/oauth2/callback")
+//    @CrossOrigin(origins = "http://localhost:3000")
+//    public ResponseEntity<UserDto> oauth2Callback(OAuth2AuthenticationToken authentication) {
+//        if (authentication == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
+//
+//        OidcUser  oidcUser  = (OidcUser ) authentication.getPrincipal();
+//        String username = oidcUser .getAttribute("sub");
+//        if (username == null || username.trim().isEmpty()) {
+//            username = oidcUser .getAttribute("login");
+//        }
+//
+//        String token = userAuthProvider.createToken(username);
+//
+//        UserDto userDto = new UserDto();
+//        userDto.setUserName(username);
+//        userDto.setToken(token);
+//
+//        return ResponseEntity.ok(userDto);
+//    }
 }

@@ -4,11 +4,11 @@ spring:
       client:
         registration:
           github:
-            client-id: Ov23li9srhsab5Erlzef
-            client-secret: 38a1c725dcb382fbe5088e419a3a37b5b3c0d5ea
+            client-id: Iv23liwioCj8qjjvOgVf
+            client-secret: 92f8b68dcb4247e85824afe9d64ff7248941c107
           google:
-            client-id: 1050657562664-ecfdm7hfjafns7kv6pjlhenvhckfln0i.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 1011064738164-i2nrhcog9p11bv8d3p96fo2611b6q7bg.apps.googleusercontent.com
+            client-secret: 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
             scope:
               - email
               - profile

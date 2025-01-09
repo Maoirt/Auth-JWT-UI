@@ -28,23 +28,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint)
+                .exceptionHandling()
+                .authenticationEntryPoint(userAuthenticationEntryPoint)
                 .and()
                 .addFilterBefore(new JwtAuthFilter(userAuthProvider), BasicAuthenticationFilter.class)
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests((requests)->requests
+                .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/logout", "/oauth2/**", "/verify-email/**").permitAll()
+                        .requestMatchers("/logout", "/oauth2/**", "/verify-email/**", "/oauth2/login/success").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(new OAuth2UserServiceAdapter(customOAuth2UserService)))
-                        .defaultSuccessUrl("http://localhost:3000", true))
-                .logout(logout-> logout
+                        .defaultSuccessUrl("/oauth2/login/success", true)
+                )
+                .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("http://localhost:3000")
                         .permitAll()
@@ -52,7 +55,7 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                 );
 
-            return http.build();
+        return http.build();
     }
 
 

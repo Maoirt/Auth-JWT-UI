@@ -31,6 +31,27 @@ export default class AppContent extends React.Component {
         setAuthHeader(null);
     };
 
+     onGoogleLogin = async () => {
+        try {
+        
+            const response = await fetch("http://localhost:8081/oauth2/login/success", {
+                method: "GET",
+                credentials: "include" 
+            });
+    
+            if (!response.ok) {
+                throw new Error("Ошибка аутентификации");
+            }
+    
+            const data = await response.json();
+            localStorage.setItem("token", data.token); 
+            setAuthHeader(data.token); 
+            this.setState({ componentToShow: "messages" });
+        } catch (error) {
+            console.error("Ошибка при входе через Google", error);
+        }
+    };
+
     onLogin = (e, username, password) => {
         e.preventDefault();
         request("POST", "/login", {
