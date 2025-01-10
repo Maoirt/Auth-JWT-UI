@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
 export default class LoginForm extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -13,11 +13,11 @@ export default class LoginForm extends React.Component {
       lastName: "",
       phone: "",
       password: "",
-      // authProvider: "",
+      showModal: false, // состояние для управления модальным окном
       onLogin: props.onLogin,
       onRegister: props.onRegister
     };
-  };
+  }
 
   onChangeHandler = (event) => {
     let name = event.target.name;
@@ -31,7 +31,7 @@ export default class LoginForm extends React.Component {
 
   onSubmitRegister = (e) => {
     console.log("Registering user:", this.state.userName, this.state.password);
-    this.state.onRegister(e, this.state.userName, this.state.email, this.state.firstName, this.state.lastName, this.state.phone, this.state.password/*, this.state.authProvider*/);
+    this.state.onRegister(e, this.state.userName, this.state.email, this.state.firstName, this.state.lastName, this.state.phone, this.state.password);
   };
 
   loginGoogle = () => {
@@ -40,6 +40,10 @@ export default class LoginForm extends React.Component {
 
   loginGithub = () => {
     window.location.href = "http://localhost:8081/oauth2/authorization/github"
+  }
+
+  toggleModal = () => {
+    this.setState(prevState => ({ showModal: !prevState.showModal }));
   }
 
   render() {
@@ -71,6 +75,44 @@ export default class LoginForm extends React.Component {
                     <input type="password" id="loginPassword" name="password" className="form-control" onChange={this.onChangeHandler} />
                     <label className="form-label" htmlFor="loginPassword">Пароль</label>
                   </div>
+
+                  <button 
+                    type="button" 
+                    className="btn btn-primary" 
+                    onClick={this.toggleModal} 
+                    style={{ marginLeft: '80%', marginBottom: '10px' }}>
+                    Забыл пароль
+                  </button>
+
+                  {this.state.showModal && (
+                    <div className="modal top fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div className="modal-dialog" style={{ width: '300px' }}>
+                        <div className="modal-content text-center">
+                          <div className="modal-header h5 text-white bg-primary justify-content-center">
+                            Сброс пароля
+                            <button type="button" className="btn-close" onClick={this.toggleModal} aria-label="Close"></button>
+                          </div>
+                          <div className="modal-body px-5">
+                            <p className="py-2">
+                              Введите ваш адрес электронной почты, и мы отправим вам инструкции по сбросу пароля.
+                            </p>
+                            <div data-mdb-input-init className="form-outline">
+                              <input type="email" id="typeEmail" className="form-control my-3" />
+                              <label className="form-label" htmlFor="typeEmail">Email</label>
+                            </div>
+                            <button 
+                              type="button" 
+                              data-mdb-ripple-init 
+                              className="btn btn-primary w-100" 
+                              // onClick={handleResetPassword}
+                            >
+                              Сбросить пароль
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="text-center" style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                     <button type="submit" className="btn btn-primary btn-block mb-4">Войти</button>
