@@ -13,7 +13,7 @@ export default class LoginForm extends React.Component {
       lastName: "",
       phone: "",
       password: "",
-      showModal: false, // состояние для управления модальным окном
+      showModal: false,
       onLogin: props.onLogin,
       onRegister: props.onRegister
     };
@@ -45,6 +45,13 @@ export default class LoginForm extends React.Component {
   toggleModal = () => {
     this.setState(prevState => ({ showModal: !prevState.showModal }));
   }
+
+  handleResetPassword = () => {
+    const { email } = this.state;
+    this.toggleModal();
+    window.location.href = `http://localhost:8081/send-reset-link?email=${encodeURIComponent(email)}`;
+  }
+
 
   render() {
     return (
@@ -97,14 +104,15 @@ export default class LoginForm extends React.Component {
                               Введите ваш адрес электронной почты, и мы отправим вам инструкции по сбросу пароля.
                             </p>
                             <div data-mdb-input-init className="form-outline">
-                              <input type="email" id="typeEmail" className="form-control my-3" />
+                              <input type="email" id="typeEmail" name='email' onChange={this.onChangeHandler} className="form-control my-3" />
                               <label className="form-label" htmlFor="typeEmail">Email</label>
                             </div>
+                            
                             <button 
                               type="button" 
                               data-mdb-ripple-init 
                               className="btn btn-primary w-100" 
-                              // onClick={handleResetPassword}
+                               onClick={this.handleResetPassword}
                             >
                               Сбросить пароль
                             </button>

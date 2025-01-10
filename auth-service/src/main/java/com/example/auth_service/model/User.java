@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,8 @@ public class User {
     private String authProvider;
     private boolean enabledVerification;
     private String verificationToken;
+    private String resetToken;
+    private LocalDateTime resetTokenExpiration;
     @Transient
     private boolean enable;
     @Transient

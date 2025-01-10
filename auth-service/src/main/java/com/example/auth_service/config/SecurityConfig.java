@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/reset-password", "/send-reset-link").permitAll()
+                        .requestMatchers("/reset-password").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/logout", "/oauth2/**", "/verify-email/**", "/oauth2/login/success").permitAll()
                         .anyRequest().authenticated()

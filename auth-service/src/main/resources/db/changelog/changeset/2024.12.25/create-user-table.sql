@@ -12,6 +12,8 @@ CREATE TABLE _user
     auth_provider varchar(50),
     enabled_verification boolean DEFAULT false,
     verification_token varchar(36),
+    reset_token varchar(36),
+    reset_token_expiration TIMESTAMP,
     CONSTRAINT user_id_pk PRIMARY KEY (id)
 );
 

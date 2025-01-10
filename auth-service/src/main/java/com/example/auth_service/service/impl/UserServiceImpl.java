@@ -41,6 +41,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(user);
     }
 
+    public User findByEmail(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(()->new UserException("Unknow user with this email", HttpStatus.NOT_FOUND));
+        return user;
+    }
+
     public User findByVerificationToken(String token){
 
         User user = userRepository.findByVerificationToken(token).orElseThrow(()->new UserException("Unknown user with token", HttpStatus.NOT_FOUND));
